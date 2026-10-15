@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]    /// ADD THE ROOT FOLDER HERE TO GET 
+                            /// "@/ROUTES" IMPORTS RATHER THAN "@/SRC/ROUTES"
     }
   },
   "include": [
