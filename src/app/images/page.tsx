@@ -37,7 +37,7 @@ export default function Images() {
 
       try {
         const response = await fetch(
-          `/api/images?page=${page}&limit=10`,
+          `/api/v1/images?page=${page}&limit=10`,
           { signal: controller.signal }
         );
 

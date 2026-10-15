@@ -2,7 +2,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
-const IMAGE_DIRECTORY = "/Users/samael/Desktop";
+const IMAGE_DIRECTORY = "/home/samael/uploads";
 
 export async function GET(request: Request) {
   try {
