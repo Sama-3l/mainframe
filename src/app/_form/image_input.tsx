@@ -23,6 +23,7 @@ export default function ImageInput() {
         type="file"
         name="image"
         accept="image/jpeg,image/png,image/webp"
+        multiple
         required
       />
       <button type="submit">Upload image</button>

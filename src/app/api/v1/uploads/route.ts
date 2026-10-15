@@ -44,63 +44,75 @@ function hasValidSignature(
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const file = formData.get("image");
-
-    if (!(file instanceof File)) {
-      return NextResponse.json(
-        { success: false, message: "Image is required." },
-        { status: 400 }
-      );
+    const files = formData.getAll("image") as File[];
+    // var file : any
+    let filenames : string[] = []
+    
+    console.log(files)
+    for(const file of files){ 
+      console.log(file);     
+      if (!(file instanceof File)) {
+        return NextResponse.json(
+          { success: false, message: "Image is required." },
+          { status: 400 }
+        );
+      }
     }
 
-    const extension = ALLOWED_TYPES[file.type];
+    for(const file of files){
+      console.log(file.name);
+      const extension = ALLOWED_TYPES[file.type];
 
-    if (!extension) {
-      return NextResponse.json(
-        { success: false, message: "Only JPEG, PNG, and WebP images are allowed." },
-        { status: 415 }
+      if (!extension) {
+        return NextResponse.json(
+          { success: false, message: "Only JPEG, PNG, and WebP images are allowed." },
+          { status: 415 }
+        );
+      }
+
+      if (file.size === 0 || file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { success: false, message: "Image must be between 1 byte and 5 MB." },
+          { status: 413 }
+        );
+      }
+
+      const buffer = Buffer.from(await file.arrayBuffer());
+
+      if (!hasValidSignature(buffer, file.type)) {
+        return NextResponse.json(
+          { success: false, message: "Invalid image file." },
+          { status: 415 }
+        );
+      }
+
+      const filename = `${randomUUID()}.${extension}`;
+      filenames.push(filename);
+      const uploadDirectory = path.join(
+        "/home/samael",
+        "uploads"
+      );
+
+      await mkdir(uploadDirectory, { recursive: true });
+
+      await writeFile(
+        path.join(uploadDirectory, filename),
+        buffer,
+        { flag: "wx" }
       );
     }
-
-    if (file.size === 0 || file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { success: false, message: "Image must be between 1 byte and 5 MB." },
-        { status: 413 }
-      );
-    }
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-
-    if (!hasValidSignature(buffer, file.type)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid image file." },
-        { status: 415 }
-      );
-    }
-
-    const filename = `${randomUUID()}.${extension}`;
-    const uploadDirectory = path.join(
-      "/home/samael",
-      "uploads"
-    );
-
-    await mkdir(uploadDirectory, { recursive: true });
-
-    await writeFile(
-      path.join(uploadDirectory, filename),
-      buffer,
-      { flag: "wx" }
-    );
 
     return NextResponse.json(
       {
         success: true,
         message: "Image uploaded successfully.",
         data: {
-          filename,
-          url: `/uploads/${filename}`,
-          size: buffer.length,
-        },
+              images : filenames.map((filename) =>  ({
+              filename: filename,
+              url: `/uploads/${filename}`,
+            }
+          ))
+        }
       },
       { status: 201 }
     );
