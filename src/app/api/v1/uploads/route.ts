@@ -80,8 +80,7 @@ export async function POST(request: Request) {
 
     const filename = `${randomUUID()}.${extension}`;
     const uploadDirectory = path.join(
-      process.cwd(),
-      "public",
+      "/home/samael",
       "uploads"
     );
 
