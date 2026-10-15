@@ -1,3 +1,4 @@
+import { env } from "@/config/env";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -5,6 +6,7 @@ const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
   },
+  allowedDevOrigins: env?.ALLOWED_URLS,
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
