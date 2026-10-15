@@ -25,34 +25,66 @@ export async function GET(request: Request) {
       withFileTypes: true,
     });
 
-    const pngFiles = entries
+    // const pngFiles = entries
+    //   .filter(
+    //     (entry) =>
+    //       entry.isFile() &&
+    //       entry.name.toLowerCase().endsWith(".png")
+    //   )
+    //   .map((entry) => entry.name)
+    //   .sort((a, b) => a.localeCompare(b));
+      
+
+    // const total = pngFiles.length;
+    // const start = (page - 1) * limit;
+    // const selectedFiles = pngFiles.slice(start, start + limit);
+
+    // const images = await Promise.all(
+    //   selectedFiles.map(async (filename) => {
+    //     const filePath = path.join(IMAGE_DIRECTORY, filename);
+    //     const buffer = await readFile(filePath);
+
+    //     return {
+    //       filename,
+    //       mimeType: "image/png",
+    //       data: buffer.toString("base64"),
+    //     };
+    //   })
+    // );
+
+    const images = entries
       .filter(
         (entry) =>
           entry.isFile() &&
-          entry.name.toLowerCase().endsWith(".png")
+          [".png", ".jpg", ".jpeg", ".webp"].includes(
+            path.extname(entry.name).toLowerCase()
+          )
       )
-      .map((entry) => entry.name)
-      .sort((a, b) => a.localeCompare(b));
+      .map((entry) => ({
+        name: entry.name,
+        fileType: path.extname(entry.name).toLowerCase().slice(1),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-    const total = pngFiles.length;
+    const total = images.length;
     const start = (page - 1) * limit;
-    const selectedFiles = pngFiles.slice(start, start + limit);
+    const selectedFiles = images.slice(start, start + limit);
 
-    const images = await Promise.all(
-      selectedFiles.map(async (filename) => {
-        const filePath = path.join(IMAGE_DIRECTORY, filename);
+    const selectedImages = await Promise.all(
+      selectedFiles.map(async (file) => {
+        const filePath = path.join(IMAGE_DIRECTORY, file.name);
         const buffer = await readFile(filePath);
-
+        
         return {
-          filename,
-          mimeType: "image/png",
+          file,
+          mimeType: file.fileType,
           data: buffer.toString("base64"),
         };
       })
     );
 
     return Response.json({
-      data: images,
+      data: selectedImages,
       pagination: {
         page,
         limit,
