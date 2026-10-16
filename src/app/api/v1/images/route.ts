@@ -86,7 +86,7 @@ export async function GET(request: Request) {
     return Response.json({
       success: true,
       message: "Successful Operation",
-      data: images,
+      data: selectedImages,
       pagination: {
         page,
         limit,

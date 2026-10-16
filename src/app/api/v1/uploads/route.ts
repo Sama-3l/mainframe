@@ -106,13 +106,11 @@ export async function POST(request: Request) {
       {
         success: true,
         message: "Image uploaded successfully.",
-        data: {
-              images : filenames.map((filename) =>  ({
+        data: filenames.map((filename) =>  ({
               filename: filename,
               url: `/uploads/${filename}`,
             }
           ))
-        }
       },
       { status: 201 }
     );
