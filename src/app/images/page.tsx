@@ -10,6 +10,8 @@ type ImageItem = {
 };
 
 type ImagesResponse = {
+  success: boolean;
+  message: string;
   data: ImageItem[];
   pagination: {
     page: number;

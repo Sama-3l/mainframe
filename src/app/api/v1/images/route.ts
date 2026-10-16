@@ -84,7 +84,9 @@ export async function GET(request: Request) {
     );
 
     return Response.json({
-      data: selectedImages,
+      success: true,
+      message: "Successful Operation",
+      data: images,
       pagination: {
         page,
         limit,
@@ -98,7 +100,8 @@ export async function GET(request: Request) {
     console.error("Failed to fetch images:", error);
 
     return Response.json(
-      { error: "Failed to fetch images" },
+      { success: false,
+      message: "Failed to fetch images", error: "Failed to fetch images" },
       { status: 500 }
     );
   }
