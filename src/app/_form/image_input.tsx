@@ -21,7 +21,7 @@ export default function ImageInput() {
     <form onSubmit={handleSubmit}>
       <input
         type="file"
-        name="image"
+        name="images"
         accept="image/jpeg,image/png,image/webp"
         multiple
         required

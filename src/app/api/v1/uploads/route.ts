@@ -44,7 +44,7 @@ function hasValidSignature(
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const files = formData.getAll("image") as File[];
+    const files = formData.getAll("images") as File[];
     // var file : any
     let filenames : string[] = []
     
