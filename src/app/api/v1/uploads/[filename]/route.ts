@@ -16,12 +16,13 @@ export async function GET(
   const safeName = path.basename(filename); // blocks ../ path traversal
   const contentType = MIME[path.extname(safeName).slice(1).toLowerCase()];
 
+  
   if (!contentType) {
     return new NextResponse("Not found", { status: 404 });
   }
-
+  
   try {
-    const file = await readFile(path.join(process.cwd(), "uploads", safeName));
+    const file = await readFile(path.join("/home/samael", "uploads", safeName));
 
     return new NextResponse(new Uint8Array(file), {
       headers: {

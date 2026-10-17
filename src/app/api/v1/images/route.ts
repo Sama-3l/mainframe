@@ -78,7 +78,7 @@ export async function GET(request: Request) {
         return {
           file,
           mimeType: file.fileType,
-          data: buffer.toString("base64"),
+          data: path.join("/home/samael", "uploads", file.name)
         };
       })
     );

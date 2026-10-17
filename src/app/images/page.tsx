@@ -3,8 +3,13 @@
 
 import React, { useEffect, useState } from "react";
 
+type FileItem = {
+  name: string;
+  fileType: string;
+}
+
 type ImageItem = {
-  filename: string;
+  file: FileItem;
   mimeType: string;
   data: string;
 };
@@ -83,14 +88,14 @@ export default function Images() {
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {images.map((image) => (
-          <div key={image.filename}>
+          <div key={image.file.name}>
             <img
-              src={`data:${image.mimeType};base64,${image.data}`}
-              alt={image.filename}
+              src={`/api/v1/uploads/${image.file.name}`}
+              alt={image.file.name}
               className="w-full rounded-lg"
             />
             <p className="mt-1 truncate text-sm">
-              {image.filename}
+              {image.file.name}
             </p>
           </div>
         ))}
