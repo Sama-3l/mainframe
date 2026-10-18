@@ -14,10 +14,11 @@ export async function DELETE(
 ) {
     const { filename } = await params;
     const safeName = path.basename(filename); // blocks ../ path traversal
-  
+
     try {
-      const file = await unlink(path.join(process.cwd(), "uploads", safeName));
-  
+
+      const file = await unlink(path.join("/home/samael", "uploads", safeName));
+      
       return NextResponse.json(
         {   
             success: true,
