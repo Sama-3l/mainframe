@@ -1,5 +1,5 @@
 
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 
 const IMAGE_DIRECTORY = "/home/samael/uploads";
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     //   })
     // );
 
-    const images = entries
+    const unsortedImages = await Promise.all( entries
       .filter(
         (entry) =>
           entry.isFile() &&
@@ -60,11 +60,19 @@ export async function GET(request: Request) {
             path.extname(entry.name).toLowerCase()
           )
       )
-      .map((entry) => ({
-        name: entry.name,
-        fileType: path.extname(entry.name).toLowerCase().slice(1),
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .map(async (entry) => { 
+        const filePath = path.join(IMAGE_DIRECTORY, entry.name);
+        const stats = await stat(filePath)
+
+        return ({
+          name: entry.name,
+          fileType: path.extname(entry.name).toLowerCase().slice(1),
+          addedAt: stats.birthtime.toISOString()
+        }) 
+      })
+    )
+
+    const images = unsortedImages.sort((a,b) => b.addedAt.localeCompare(a.addedAt))
 
     const total = images.length;
     const start = (page - 1) * limit;
