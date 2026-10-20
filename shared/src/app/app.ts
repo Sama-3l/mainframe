@@ -3,8 +3,6 @@ import { env } from '../config/env'
 import path, { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 
-console.log(path.join(env.DB_PATH, 'app.db'));
-
 const dbPath = resolve(process.cwd(), 'app.db');
 
 if (existsSync(dbPath)) {
@@ -29,8 +27,13 @@ export function initializeDatabase() {
     const table = db.prepare(`
         SELECT name
         FROM sqlite_master
-        WHERE type = 'table' AND name = tokens
-    `)
+        WHERE type = 'table' AND name = ?
+    `).get('tokens')
 
-    console.log(table)
+    if(!table){
+        db.exec(query)
+        console.log("table doesn't exist")
+    }else{
+        console.log("TABLE EXISTS")
+    }
 } 
