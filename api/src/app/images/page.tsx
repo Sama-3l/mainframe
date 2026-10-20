@@ -38,6 +38,7 @@ export default function Images() {
   useEffect(() => {
     const controller = new AbortController();
 
+    
     async function fetchImages() {
       setLoading(true);
       setError(null);
@@ -70,7 +71,7 @@ export default function Images() {
         }
       }
     }
-
+    
     fetchImages();
 
     return () => controller.abort();
