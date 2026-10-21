@@ -12,11 +12,10 @@ CREATE TABLE IF NOT EXISTS devices (
   last_seen_at INTEGER,
   revoked_at   INTEGER                  -- NULL = active
 );
-DELETE TABLE tokens
 
-CREATE INDEX IF NOT EXISTS pairing_tokens_expires ON pairing_tokens (expires_at);
+CREATE INDEX IF NOT EXISTS pairing_tokens_expires ON tokens (expires_at);
 
-CREATE TABLE IF NOT EXISTS pairing_tokens(
+CREATE TABLE IF NOT EXISTS tokens(
     id INTEGER PRIMARY KEY,
     token_hash TEXT NOT NULL UNIQUE,
     expires_at INTEGER NOT NULL,
