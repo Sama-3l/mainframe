@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const schemaPath = fileURLToPath(
-  new URL("./schema.sql", import.meta.url)
+  new URL(".././schema.sql", import.meta.url)
 );
 
 const SCHEMA_V1 = readFileSync(schemaPath, "utf8");
