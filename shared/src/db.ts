@@ -2,7 +2,7 @@ import Database from "better-sqlite3";
 import { randomBytes } from "node:crypto";
 import { mkdirSync, readFileSync } from "node:fs";
 import path, { dirname } from "node:path";
-import { env } from "../config/env";
+import { env } from "./config/env";
 import { fileURLToPath } from "node:url";
 
 const schemaPath = fileURLToPath(
