@@ -9,7 +9,6 @@ const server = app.listen(4000, async () => {
     source: "server",
   });
   const tunnelURL = await getTunnelUrl(env.TUNNEL_METRICS_URL);
-  console.log(tunnelURL)
 });
 
 // async function shutdown(signal: string) {
