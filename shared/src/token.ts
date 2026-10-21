@@ -2,7 +2,7 @@ import { randomBytes, createHash, timingSafeEqual,  } from "node:crypto";
 
 export const token = randomBytes(16).toString("hex");
 
-export function generatePairingToken(bytes = 32) : string{
+export function generateToken(bytes = 32) : string{
     return randomBytes(bytes).toString("base64url");
 }
 

@@ -1,17 +1,19 @@
-import { getDb } from './db';
-import { token } from './token';
+// shared/src/index.ts
+export { env } from "./config/env";
 
-const conn = getDb();    
+export {
+  generatePairingToken,
+  consumePairingToken,
+  isPairingOpen,
+  purgePairingTokens,
+  PAIRING_TTL_SECONDS,
+} from "./pairing";
 
-const response = conn
-  .prepare(`
-        SELECT name
-        FROM sqlite_master
-        WHERE type = 'table'
-        AND name NOT LIKE 'sqlite_%'
-        ORDER BY name;
-    `)
-  .all();
+export {
+  createDevice,
+  verifyDeviceToken,
+  revokeDevice,
+  listDevices,
+} from "./devices";
 
-console.log(response)
-console.log(token)
+export type { Device, PairingResult, QrPlayload, Token } from "./types";

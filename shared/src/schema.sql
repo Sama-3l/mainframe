@@ -16,9 +16,9 @@ CREATE TABLE IF NOT EXISTS devices (
 CREATE INDEX IF NOT EXISTS pairing_tokens_expires ON tokens (expires_at);
 
 CREATE TABLE IF NOT EXISTS tokens(
-    id INTEGER PRIMARY KEY,
-    token_hash TEXT NOT NULL UNIQUE,
-    expires_at INTEGER NOT NULL,
-    used_at    INTEGER,                   -- NULL = still usable
-    created_at INTEGER NOT NULL
+  id INTEGER PRIMARY KEY,
+  token_hash TEXT NOT NULL UNIQUE,
+  expires_at INTEGER NOT NULL,
+  used_at    INTEGER,                   -- NULL = still usable
+  created_at INTEGER NOT NULL
 );
