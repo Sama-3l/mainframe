@@ -1,0 +1,19 @@
+name: Update home server code
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: home-server-deploy
+  cancel-in-progress: false
+
+jobs:
+  update-code:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Pull latest code on home server
+        run: |
+          cd /home/samael/Documents/Projects/mainframe
+          git pull --ff-only origin main
