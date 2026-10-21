@@ -1,4 +1,5 @@
 import { getDb } from './db';
+import { token } from './token';
 
 const conn = getDb();    
 
@@ -13,3 +14,4 @@ const response = conn
   .all();
 
 console.log(response)
+console.log(token)
