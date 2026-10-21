@@ -2,10 +2,8 @@ import { getDb } from '../modules/db';
 
 const conn = getDb();    
 
-const response = conn.exec(`
-        SELECT *
-        FROM server_settings
-    `
-)
+const response = conn
+  .prepare("SELECT * FROM server_settings")
+  .all();
 
 console.log(response)
