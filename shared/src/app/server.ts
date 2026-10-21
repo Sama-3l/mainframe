@@ -1,4 +1,3 @@
-import { initializeDatabase } from './app';
+import { getDb } from '../modules/db';
 
-
-initializeDatabase();    
+const conn = getDb();    

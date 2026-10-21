@@ -1,3 +1,8 @@
+CREATE TABLE IF NOT EXISTS server_settings (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS devices (
   id           TEXT    PRIMARY KEY,     -- random id, the lookup half of the device token
   name         TEXT    NOT NULL,
@@ -7,6 +12,8 @@ CREATE TABLE IF NOT EXISTS devices (
   last_seen_at INTEGER,
   revoked_at   INTEGER                  -- NULL = active
 );
+
+CREATE INDEX IF NOT EXISTS pairing_tokens_expires ON pairing_tokens (expires_at);
 
 CREATE TABLE IF NOT EXISTS tokens(
     id INTEGER PRIMARY KEY,
