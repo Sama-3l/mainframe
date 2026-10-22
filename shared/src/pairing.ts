@@ -6,18 +6,18 @@ import { Device, PairingResult } from "./types";
 export const PAIRING_TTL_SECONDS = 120;
 const nowSec = () => Math.floor(Date.now() / 1000);
 
-export function isPairingOpen(): Boolean {
+export function isPairingOpen(): Boolean {    
     const setting = getDb()
-        .prepare("SELECT value FROM settings WHERE key = 'pairing_open'")
+        .prepare("SELECT value FROM server_settings WHERE key = 'pairing_open'")
         .get() as { value : string } | undefined;
-    return setting?.value === "1";
+    return setting?.value === "1" || setting?.value === undefined;
 }
 
 export function generatePairingToken(now = nowSec()) {
     const db = getDb();
     return db.transaction(() => {
+        
         if (!isPairingOpen()) throw new Error("pairing is closed");
-
         const { changes } = db.prepare("DELETE FROM tokens WHERE used_at IS NULL").run();
 
         const token = generateToken();
@@ -25,8 +25,12 @@ export function generatePairingToken(now = nowSec()) {
         db.prepare(
             "INSERT INTO tokens (token_hash, expires_at, created_at) VALUES (?, ?, ?)"
         ).run(sha256(token), expiresAt, now);
-
-        return { token: token, expiresAt: expiresAt };
+        
+        const serverId = (db.prepare(
+            "SELECT value FROM server_settings WHERE key = 'server_id'"
+        ).get() as { value : string } | undefined)?.value;
+        
+        return { token: token, expiresAt: expiresAt, serverId: serverId };
     }).immediate();
 }
 
@@ -49,7 +53,7 @@ export function consumePairingToken(rawToken: string, device: Device, now = nowS
         if (res.changes !== 1) return null;
 
         const creds = createDevice({ platform: platform, name: name }, now);
-        db.prepare("UPDATE settings SET value = '0' WHERE key = 'pairing_open'").run();
+        db.prepare("UPDATE server_settings SET value = '0' WHERE key = 'pairing_open'").run();
         return creds;
     }).immediate();
 }
