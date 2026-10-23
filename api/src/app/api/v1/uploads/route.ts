@@ -48,9 +48,7 @@ export async function POST(request: Request) {
     // var file : any
     let filenames : string[] = []
     
-    console.log(files)
     for(const file of files){ 
-      console.log(file);     
       if (!(file instanceof File)) {
         return NextResponse.json(
           { success: false, message: "Image is required." },
@@ -60,7 +58,6 @@ export async function POST(request: Request) {
     }
 
     for(const file of files){
-      console.log(file.name);
       const extension = ALLOWED_TYPES[file.type];
 
       if (!extension) {

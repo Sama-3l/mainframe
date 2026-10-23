@@ -1,12 +1,13 @@
 
+import { withAuth } from "@/lib/withAuth";
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 
 const IMAGE_DIRECTORY = "/home/samael/uploads";
 
-export async function GET(request: Request) {
+export const GET = withAuth(async (req, ctx) => {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
 
     const page = Math.max(
       1,
@@ -113,4 +114,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-}
+}) 
