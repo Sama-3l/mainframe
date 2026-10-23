@@ -17,3 +17,11 @@ jobs:
         run: |
           cd /home/samael/Documents/Projects/mainframe
           git pull --ff-only origin main
+
+      - name: Install dependencies
+        run: |
+          cd /home/samael/Documents/Projects/mainframe
+          for dir in api setup shared; do
+            echo "Installing dependencies in $dir"
+            (cd "$dir" && npm install)
+          done
