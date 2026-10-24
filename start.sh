@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Use nvm's Node 22 instead of the old system Node (v12), since
+# double-click launchers don't load ~/.bashrc
+export PATH="/home/samael/.nvm/versions/node/v22.23.2/bin:$PATH"
+echo "Using Node $(node -v)"
+
 BASE_DIR="/home/samael/Documents/Projects/mainframe"
 DB_DIR="/home/samael/mainframe_DB"
 PIDS=()
