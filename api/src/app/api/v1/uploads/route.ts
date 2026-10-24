@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { withAuth } from "@/lib/withAuth";
 
 const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 MB
 
@@ -41,7 +42,7 @@ function hasValidSignature(
   return false;
 }
 
-export async function POST(request: Request) {
+export const POST = withAuth(async (request: NextRequest) => {
   try {
     const formData = await request.formData();
     const files = formData.getAll("images") as File[];
@@ -119,4 +120,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+})
