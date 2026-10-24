@@ -13,8 +13,6 @@ CREATE TABLE IF NOT EXISTS devices (
   revoked_at   INTEGER                  -- NULL = active
 );
 
-CREATE INDEX IF NOT EXISTS pairing_tokens_expires ON tokens (expires_at);
-
 CREATE TABLE IF NOT EXISTS tokens(
   id INTEGER PRIMARY KEY,
   token_hash TEXT NOT NULL UNIQUE,
@@ -22,3 +20,4 @@ CREATE TABLE IF NOT EXISTS tokens(
   used_at    INTEGER,                   -- NULL = still usable
   created_at INTEGER NOT NULL
 );
+CREATE INDEX IF NOT EXISTS pairing_tokens_expires ON tokens (expires_at);

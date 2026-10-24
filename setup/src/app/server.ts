@@ -8,10 +8,26 @@ import open from "open";
 const PORT = 4000;
 
 const app = createApp();
+let pairingOpen : Boolean = false;
 let error : string  | null;
 let QRCodeData : string | null;
 
 app.get("/", (_req, res) => {
+  if(!pairingOpen){
+    return res.status(503).send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Mainframe - Initializing</title>
+        </head>
+        <body>
+          <h2>Pairing Closed</h2>
+          <p>Unpair from app</p>
+        </body>
+      </html>
+    `);
+  }
+  
   if (!QRCodeData) {
     return res.status(503).send(`
       <!DOCTYPE html>
@@ -56,6 +72,7 @@ const server = app.listen(PORT, async () => {
   let json : QrPlayload;
 
   try{
+    pairingOpen = isPairingOpen();
     const tunnelURL = `${(await getTunnelUrl(env.TUNNEL_METRICS_URL))}/api/v1`;
     const pairingToken = await generatePairingToken();
 
