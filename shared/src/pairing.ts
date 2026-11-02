@@ -74,16 +74,13 @@ export function consumePairingToken(rawToken: string, device: Device, now = nowS
 export function checkPairingTokens(){
     const db = getDb();
     const res = db.prepare("SELECT * FROM tokens").all() as TokenRow[];
-    console.log(res)
+    
     for (const row of res) {
         const { expires_at, used_at, created_at } = row;
         const expire = new Date(expires_at * 1000)
         const used = new Date(used_at * 1000)
         const create = new Date(created_at * 1000)
 
-        console.log(expire)
-        console.log(used)
-        console.log(create)
     }
 }
 
@@ -97,7 +94,6 @@ export function pairingSettings(){
     const db = getDb();
     const res = db.prepare("SELECT * FROM server_settings").all();
 
-    console.log(res)
 }
 
 export function purgePairingTokens(now = nowSec()) {
