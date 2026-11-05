@@ -7,6 +7,9 @@ dotenv.config({
 });
 
 const envSchema = z.object({
+  GALLERY_PATH: z
+  .string()
+  .default(""),
   ALLOWED_URLS: z
     .string()
     .default("")

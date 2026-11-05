@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { withAuth } from "@/lib/withAuth";
+import { env } from "../../../../config/env";
 
 const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200 MB
 
@@ -86,10 +87,7 @@ export const POST = withAuth(async (request: NextRequest) => {
 
       const filename = `${randomUUID()}.${extension}`;
       filenames.push(filename);
-      const uploadDirectory = path.join(
-        "/home/samael",
-        "uploads"
-      );
+      const uploadDirectory = env.GALLERY_PATH
 
       await mkdir(uploadDirectory, { recursive: true });
 

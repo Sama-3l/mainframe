@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { unlink } from "node:fs/promises";
 import path from "node:path";
+import { env } from "../../../../../config/env";
 
 const MIME: Record<string, string> = {
   jpg: "image/jpeg",
@@ -17,7 +18,7 @@ export async function DELETE(
 
     try {
 
-      const file = await unlink(path.join("/home/samael", "uploads", safeName));
+      const file = await unlink(path.join(env.GALLERY_PATH, safeName));
       
       return NextResponse.json(
         {   

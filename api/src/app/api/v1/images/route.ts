@@ -2,8 +2,9 @@
 import { withAuth } from "@/lib/withAuth";
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
+import { env } from "../../../../config/env";
 
-const IMAGE_DIRECTORY = "/home/samael/uploads";
+const IMAGE_DIRECTORY = env.GALLERY_PATH;
 
 export const GET = withAuth(async (req, ctx) => {
   try {
@@ -87,7 +88,7 @@ export const GET = withAuth(async (req, ctx) => {
         return {
           file,
           mimeType: file.fileType,
-          data: path.join("/home/samael", "uploads", file.name)
+          data: path.join(IMAGE_DIRECTORY, file.name)
         };
       })
     );

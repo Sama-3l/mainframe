@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/withAuth"; // adjust to your actual path
+import { env } from "../../../../../config/env";
 
 const MIME: Record<string, string> = {
   png: "image/png",
@@ -24,7 +25,7 @@ export const GET = withAuth<Ctx>(async (_req: NextRequest, { params }) => {
   }
 
   try {
-    const file = await readFile(path.join("/home/samael", "uploads", safeName));
+    const file = await readFile(path.join(env.GALLERY_PATH, safeName));
 
     return new NextResponse(new Uint8Array(file), {
       headers: {
