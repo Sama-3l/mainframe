@@ -23,8 +23,8 @@ cleanup() {
 trap cleanup INT TERM EXIT
 
 # Delete existing database files before starting the server
-echo "Removing existing database files in $DB_DIR..."
-rm -f "$DB_DIR/app.db" "$DB_DIR/app.db-shm" "$DB_DIR/app.db-wal"
+# echo "Removing existing database files in $DB_DIR..."
+# rm -f "$DB_DIR/app.db" "$DB_DIR/app.db-shm" "$DB_DIR/app.db-wal"
 
 # Run each service in its own process group (setsid) so cleanup is reliable
 echo "Starting API on port 3000..."
