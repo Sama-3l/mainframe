@@ -1,7 +1,7 @@
 import { createApp } from "../app/app";
 import { getTunnelUrl } from "../modules/pair/getURL";
 import { env } from "../config/env"
-import { generatePairingToken, isPairingOpen, QrPlayload } from "../../../shared/src";
+import { Device, generatePairingToken, isPairingOpen, listDevices, QrPlayload } from "../../../shared/src";
 import QRCode from "qrcode";
 import open from "open";
 
@@ -10,6 +10,7 @@ const PORT = 4000;
 const app = createApp();
 let pairingOpen : Boolean = false;
 let error : string  | null;
+let devices : string = "";
 let QRCodeData : string | null;
 
 app.get("/", (_req, res) => {
@@ -38,6 +39,21 @@ app.get("/", (_req, res) => {
         <body>
           <h2>Initializing Theo...</h2>
           <p>Waiting for the Cloudflare Tunnel to become available.</p>
+
+        </body>
+      </html>
+    `);
+  }
+
+  if (!pairingOpen) {
+    return res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Mainframe Paired to Device</title>
+        </head>
+        <body>
+          ${devices}
         </body>
       </html>
     `);
@@ -75,6 +91,7 @@ const server = app.listen(PORT, async () => {
     pairingOpen = isPairingOpen();
     const tunnelURL = `${(await getTunnelUrl(env.TUNNEL_METRICS_URL))}/api/v1`;
     const pairingToken = await generatePairingToken();
+    const deviceList = await listDevices();
 
     json = { url : tunnelURL, token : pairingToken.token, serverId: pairingToken.serverId ?? "" }
 
@@ -84,6 +101,13 @@ const server = app.listen(PORT, async () => {
       errorCorrectionLevel: "M",
     });
 
+    devices = `<ul>`
+
+    deviceList.map((e) => {
+      devices += `<li> ${e.name} | ${e.platform} </li>`
+    })
+
+    devices += `</ul>`
     await open(`http://localhost:${PORT}/`);  
 
     console.log("Theo pairing page opened in your browser.");
