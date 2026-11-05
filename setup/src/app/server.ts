@@ -114,7 +114,7 @@ const server = app.listen(PORT, async () => {
   } catch(e) {
 
   }
-  console.log(`Theo backend running on port ${4000} (${"DEVELOPMENT"})`, {
+  console.log(`Mainframe setup running on port ${4000} (${"DEVELOPMENT"})`, {
     source: "server",
   });
 });
