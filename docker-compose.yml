@@ -1,0 +1,63 @@
+services:
+  api:
+    build:
+      context: .                      # repo root so shared/ is visible
+      dockerfile: api/Dockerfile
+    image: sama3l/mainframe-api:1.0
+    user: "${HOST_UID}:${HOST_GID}"
+    environment:
+      # Paths INSIDE the container. These override whatever the app would read locally.
+      DB_PATH: /data/db
+      GALLERY_PATH: /data/uploads
+      TUNNEL_METRICS_URL: http://tunnel:20241   # only if api's env.ts requires it
+    volumes:
+      - ${DB_PATH}:/data/db           # host folder : container folder
+      - ${GALLERY_PATH}:/data/uploads
+    # Uncomment if the phone should also reach the server over your LAN
+    # (your ALLOWED_URLS contains 192.168.1.13):
+    # ports:
+    #   - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/v1/health').then(()=>process.exit(0)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    # --url: send public traffic to the api container by service name
+    # --metrics 0.0.0.0:20241: make the metrics server reachable from other containers
+    command: tunnel --no-autoupdate --metrics 0.0.0.0:20241 --url http://api:3000
+    depends_on:
+      api:
+        condition: service_healthy    # 1) api must be up before the tunnel starts
+    healthcheck:
+      # `ready` succeeds only once cloudflared is connected to Cloudflare's edge.
+      # Exec form is required: this image has no shell.
+      test: ["CMD", "cloudflared", "tunnel", "--metrics", "127.0.0.1:20241", "ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  setup:
+    build:
+      context: .
+      dockerfile: setup/Dockerfile
+    image: sama3l/mainframe-setup:1.0
+    user: "${HOST_UID}:${HOST_GID}"
+    environment:
+      DB_PATH: /data/db
+      TUNNEL_METRICS_URL: http://tunnel:20241   # service name, not 127.0.0.1
+      OPEN_BROWSER: "false"
+    volumes:
+      - ${DB_PATH}:/data/db
+    depends_on:
+      tunnel:
+        condition: service_healthy    # 2) setup starts only when the tunnel is live
+        restart: true                 # 3) if the tunnel restarts (new URL), restart setup for a fresh QR
+    ports:
+      - "127.0.0.1:4000:4000"         # reachable only from this computer
+    restart: unless-stopped

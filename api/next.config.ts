@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     agentFeedback: true,
+    externalDir: true
   },
+  serverExternalPackages: ["better-sqlite3"],
   allowedDevOrigins: env?.ALLOWED_URLS,
   cacheComponents: true,
   partialPrefetching: true,
