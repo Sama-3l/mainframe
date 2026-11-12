@@ -23,26 +23,22 @@ const page = (title: string, body: string) =>
    <title>Mainframe - ${title}</title></head><body>${body}</body></html>`;
 
 app.get("/", (_req, res) => {
-  // 1. Startup failed: show why instead of spinning forever
   if (startupError) {
     return res.status(500).send(page("Error", `<h2>Setup failed</h2><pre>${esc(startupError)}</pre>`));
   }
-  // 2. Still waiting for the tunnel URL / token / DB
   if (!ready) {
     return res.status(503).send(page("Initializing",
-      `<h2>Initializing Theo...</h2><p>Waiting for the Cloudflare Tunnel to become available.</p>`));
+      `<h2>Initializing MainFrame...</h2><p>Waiting for the Cloudflare Tunnel to become available.</p>`));
   }
-  // 3. Already paired: show devices (this was unreachable before)
   if (!pairingOpen) {
     return res.send(page("Paired",
       `<h2>Pairing Closed</h2><p>Unpair from the app to pair again.</p>${devices}`));
   }
-  // 4. Pairing open: show QR
   res.send(page("Pair Device", `
     <main>
       <h1>Mainframe</h1>
       <p>● Tunnel active</p>
-      <img src="${QRCodeData}" alt="Theo pairing QR code" />
+      <img src="${QRCodeData}" alt="MainFrame pairing QR code" />
       <p>Scan this QR code using your Flutter application.</p>
     </main>`));
 });
@@ -52,8 +48,9 @@ app.listen(PORT, async () => {
   console.log(`Mainframe setup running on port ${PORT}`);
 
   try {
+    console.log("Here")
     pairingOpen = await isPairingOpen(); // await is harmless if it's sync
-
+    console.log(pairingOpen)
     const deviceList = await listDevices();
     devices = `<ul>${deviceList.map((d) => `<li>${esc(d.name)} | ${esc(d.platform ?? "")}</li>`).join("")}</ul>`;
 
@@ -74,12 +71,11 @@ app.listen(PORT, async () => {
     }
 
     ready = true;
-
     // Skipped in Docker (OPEN_BROWSER=false); `open` is imported lazily so it never loads there.
     if (process.env.OPEN_BROWSER !== "false") {
       const { default: open } = await import("open");
       await open(`http://localhost:${PORT}/`).catch(() => {});
-      console.log("Theo pairing page opened in your browser.");
+      console.log("MainFrame pairing page opened in your browser.");
     } else {
       console.log(`Pairing page ready: http://localhost:${PORT}/`);
     }
